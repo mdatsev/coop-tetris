@@ -7,7 +7,8 @@ const wellWidth = 200,
     height = sidebarSize + wellHeight + ground,
     wellColor = '#33343a',
     sidebarColor = '#52596d',
-    backroundColor = '#52596d';
+    backroundColor = '#52596d',
+    scale = 10;
 
 function setup() {
     createCanvas(width + 1, height + 1);
@@ -22,5 +23,12 @@ function setup() {
 }
 
 function draw() {
-
+    socket.on('well', function(well) {
+        for (let i = 0; i < well.length; i++) {
+            for (let j = 0; j < well.length; j++) {
+                fill(well[i][j]);
+                rect(sidebarSize + i, sidebarSize + j, scale, scale);
+            }
+        }
+    });
 }
