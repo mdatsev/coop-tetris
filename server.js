@@ -11,6 +11,9 @@ http.listen(3000, () => {
 });
 
 io.on('connection', function(socket) {
+    socket.on('key press', function(data) {
+        console.log(data);
+    });
     console.log(`New connection: ${socket.id}`);
     socket.on('disconnect', function() {
         console.log(`Disconnected: ${socket.id}`);
