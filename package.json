@@ -1,0 +1,23 @@
+{
+  "name": "tetris",
+  "version": "1.0.0",
+  "description": "tetris experiment ... TBC",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mdatsev/tetris.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mdatsev/tetris/issues"
+  },
+  "homepage": "https://github.com/mdatsev/tetris#readme",
+  "dependencies": {
+    "express": "^4.14.0",
+    "socket.io": "^1.7.2"
+  }
+}
