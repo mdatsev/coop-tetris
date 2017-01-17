@@ -3,7 +3,35 @@ const app = require('express')();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const path = require('path');
+const KEY_LEFT = 37, KEY_UP = 38, KEY_RIGHT = 39, KEY_DOWN = 40; 
 
+var well = Create2DArray(10, 22);
+
+function Create2DArray(rows, cols) {
+  var arr = [];
+
+  for (var i = 0; i < rows; i++) {
+        arr[i] = new Array(cols);
+  }
+
+  return arr;
+}
+
+function KeyPressHandler(keyPress){
+    switch(keyPress)
+    {
+        case KEY_LEFT:
+            break;
+        case KEY_UP:
+            break;
+        case KEY_RIGHT:
+            break;
+        case KEY_UP:
+            break;
+        
+    }
+
+}
 app.use(express.static('public'));
 
 http.listen(3000, () => {
@@ -12,7 +40,7 @@ http.listen(3000, () => {
 
 io.on('connection', function(socket) {
     socket.on('key press', function(data) {
-        console.log(data);
+        KeyPressHandler(data);
     });
     console.log(`New connection: ${socket.id}`);
     socket.on('disconnect', function() {
