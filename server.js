@@ -34,6 +34,14 @@ function KeyPressHandler(keyPress) {
             break;
     }
 }
+
+app.get('/config', function(req, res) {
+    res.send({
+        height: 10,
+        width: 22
+    });
+});
+
 app.use(express.static('public'));
 
 http.listen(3000, () => {
