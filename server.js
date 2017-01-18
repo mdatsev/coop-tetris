@@ -9,7 +9,15 @@ const KEY_LEFT = 37,
     KEY_RIGHT = 39,
     KEY_DOWN = 40;
 
-var well = create2DArray(10, 22);
+function rgbToHex(r, g, b) {
+    function componentToHex(c) {
+        var hex = c.toString(16);
+
+        return hex.length == 1 ? '0' + hex : hex;
+    }
+
+    return `#${componentToHex(r)}${componentToHex(g)}${componentToHex(b)}`;
+}
 
 function create2DArray(rows, cols) {
     var arr = [];
@@ -19,6 +27,14 @@ function create2DArray(rows, cols) {
     }
 
     return arr;
+}
+
+class Well {
+    constructor(height, width) {
+        this.height = height;
+        this.width = width;
+        this.matrix = create2DArray(width, height);
+    }
 }
 
 function KeyPressHandler(keyPress) {
@@ -47,6 +63,17 @@ http.listen(3000, () => {
 });
 
 io.on('connection', function(socket) {
+    well = new Well(10, 22);
+    demoCounter = 0;
+    setInterval(() => {
+        for (let row = 0; row < well.matrix.length; row++) {
+            for (let col = 0; col < well.matrix[row].length; col++) {
+                well.matrix[row][col] = rgbToHex(row + demoCounter, col + demoCounter, 100);
+            }
+        }
+        socket.emit('well', well);
+        demoCounter++;
+    }, 100);
     socket.on('key press', function(data) {
         keyPressHandler(data);
     });
