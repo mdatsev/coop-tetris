@@ -1,5 +1,4 @@
 {
-<<<<<<< HEAD
     "wellWidth":200,  
     "wellHeight":440,
     "sidebarSize":75, 
@@ -9,7 +8,6 @@
     "sidebarColor":"#52596d",
     "backroundColor":"#52596d",
     "scale":20,
-=======
     "wellWidth": 200,
     "wellHeight": 440,
     "sidebarSize": 75,
@@ -19,5 +17,4 @@
     "sidebarColor": "#52596d",
     "backroundColor": "#52596d",
     "scale": 20
->>>>>>> origin/master
 }
