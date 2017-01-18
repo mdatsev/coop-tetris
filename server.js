@@ -4,16 +4,12 @@ const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const path = require('path');
 const config = require('./config');
-const KEY_LEFT = 37,
-    KEY_UP = 38,
-    KEY_RIGHT = 39,
-    KEY_DOWN = 40;
 
 function rgbToHex(r, g, b) {
     function componentToHex(c) {
         var hex = c.toString(16);
 
-        return hex.length == 1 ? '0' + hex : hex;
+        return hex.length === 1 ? '0' + hex : hex;
     }
 
     return `#${componentToHex(r)}${componentToHex(g)}${componentToHex(b)}`;
@@ -39,13 +35,17 @@ class Well {
 
 function keyPressHandler(keyPress) {
     switch (keyPress) {
-        case KEY_LEFT:
+        case 'UP':
+            console.log('TODO UP');
             break;
-        case KEY_UP:
+        case 'DOWN':
+            console.log('TODO DOWN');
             break;
-        case KEY_RIGHT:
+        case 'LEFT':
+            console.log('TODO LEFT');
             break;
-        case KEY_DOWN:
+        case 'RIGHT':
+            console.log('TODO RIGHT');
             break;
         default:
             break;
@@ -74,11 +74,9 @@ io.on('connection', function(socket) {
         socket.emit('well', well);
         demoCounter++;
     }, 100);
-    socket.on('key press', function(data) {
-        keyPressHandler(data);
-    });
+    socket.on('key press', keyPressHandler);
     console.log(`New connection: ${socket.id}`);
-    socket.on('disconnect', function() {
+    socket.on('disconnect', () => {
         console.log(`Disconnected: ${socket.id}`);
     });
 });
