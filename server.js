@@ -3,6 +3,7 @@ const app = require('express')();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const path = require('path');
+const config = require('./config');
 const KEY_LEFT = 37,
     KEY_UP = 38,
     KEY_RIGHT = 39,
@@ -36,10 +37,7 @@ function KeyPressHandler(keyPress) {
 }
 
 app.get('/config', function(req, res) {
-    res.send({
-        height: 10,
-        width: 22
-    });
+    res.send(config);
 });
 
 app.use(express.static('public'));

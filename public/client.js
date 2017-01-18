@@ -1,33 +1,28 @@
-const wellWidth = 200,
-    wellHeight = 440,
-    sidebarSize = 75,
-    ground = 10,
-    round = 0,
-    width = 2 * sidebarSize + wellWidth,
-    height = sidebarSize + wellHeight + ground,
-    wellColor = '#33343a',
-    sidebarColor = '#52596d',
-    backroundColor = '#52596d',
-    scale = 20;
+config = {};
 
 function setup() {
+
     xmlhttp = new XMLHttpRequest();
     xmlhttp.open("GET", "/config", true);
     xmlhttp.onreadystatechange = () => {
         if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
             console.log(xmlhttp.responseText);
+            config = JSON.parse(xmlhttp.responseText);
+            config.width = 2 * config.sidebarSize + config.wellWidth;
+            config.height = config.sidebarSize + config.wellHeight + config.ground;
+            console.log(config);
+            createCanvas(config.width, config.height);
+            background(config.backroundColor);
+            noStroke();
+            fill(config.wellColor);
+            rect(config.sidebarSize, config.sidebarSize, config.wellWidth, config.wellHeight, config.round);
+            fill(config.backroundColor);
+            rect(0, 0, config.width, config.sidebarSize, config.round);
+            rect(0, config.sidebarSize, config.sidebarSize, config.height - config.sidebarSize, config.round);
+            rect(config.sidebarSize + config.wellWidth, config.sidebarSize, config.sidebarSize, config.height - config.sidebarSize, config.round);
         }
     }
     xmlhttp.send();
-    createCanvas(width + 1, height + 1);
-    background(backroundColor);
-    noStroke();
-    fill(wellColor);
-    rect(sidebarSize, sidebarSize, wellWidth, wellHeight, round / 2);
-    fill(backroundColor);
-    rect(0, 0, width, sidebarSize, round);
-    rect(0, sidebarSize, sidebarSize, height - sidebarSize, round);
-    rect(sidebarSize + wellWidth, sidebarSize, sidebarSize, height - sidebarSize, round);
 }
 
 const well = [
@@ -61,7 +56,7 @@ function draw() {
         for (let col = 0; col < well[row].length; col++) {
             //console.log(well[row][col]);
             fill(well[row][col]);
-            rect(sidebarSize + col * scale, sidebarSize + row * scale, scale, scale);
+            rect(config.sidebarSize + col * config.scale, config.sidebarSize + row * config.scale, config.scale, config.scale);
         }
     }
     //});
