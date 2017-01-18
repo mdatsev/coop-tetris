@@ -24,6 +24,7 @@ function setup() {
     xmlhttp.send();
     socket.on('well', function(well) {
         console.log(well);
+        stroke(config.backroundColor);
         for (let row = 0; row < well.matrix.length; row++) {
             for (let col = 0; col < well.matrix[row].length; col++) {
                 fill(well.matrix[row][col]);
