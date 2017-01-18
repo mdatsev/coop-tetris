@@ -37,7 +37,7 @@ class Well {
     }
 }
 
-function KeyPressHandler(keyPress) {
+function keyPressHandler(keyPress) {
     switch (keyPress) {
         case KEY_LEFT:
             break;
