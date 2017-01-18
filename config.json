@@ -1,0 +1,13 @@
+{
+    wellWidth = 200,
+        wellHeight = 440,
+        sidebarSize = 75,
+        ground = 10,
+        round = 0,
+        width = 2 * sidebarSize + wellWidth,
+        height = sidebarSize + wellHeight + ground,
+        wellColor = '#33343a',
+        sidebarColor = '#52596d',
+        backroundColor = '#52596d',
+        scale = 20
+}

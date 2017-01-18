@@ -1,16 +1,6 @@
-const wellWidth = 200,
-    wellHeight = 440,
-    sidebarSize = 75,
-    ground = 10,
-    round = 0,
-    width = 2 * sidebarSize + wellWidth,
-    height = sidebarSize + wellHeight + ground,
-    wellColor = '#33343a',
-    sidebarColor = '#52596d',
-    backroundColor = '#52596d',
-    scale = 20;
+const config = getConfig();
 
-function setup() {
+function getConfig() {
     xmlhttp = new XMLHttpRequest();
     xmlhttp.open("GET", "/config", true);
     xmlhttp.onreadystatechange = () => {
@@ -19,6 +9,12 @@ function setup() {
         }
     }
     xmlhttp.send();
+}
+
+config.width = 2 * config.sidebarSize + config.wellWidth;
+config.height = config.sidebarSize + config.wellHeight + config.ground;
+
+function setup() {
     createCanvas(width + 1, height + 1);
     background(backroundColor);
     noStroke();
