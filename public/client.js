@@ -1,29 +1,28 @@
-const config = getConfig();
+config = {};
 
-function getConfig() {
+function setup() {
+
     xmlhttp = new XMLHttpRequest();
     xmlhttp.open("GET", "/config", true);
     xmlhttp.onreadystatechange = () => {
         if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
             console.log(xmlhttp.responseText);
+            config = JSON.parse(xmlhttp.responseText);
+            config.width = 2 * config.sidebarSize + config.wellWidth;
+            config.height = config.sidebarSize + config.wellHeight + config.ground;
+            console.log(config);
+            createCanvas(config.width, config.height);
+            background(config.backroundColor);
+            noStroke();
+            fill(config.wellColor);
+            rect(config.sidebarSize, config.sidebarSize, config.wellWidth, config.wellHeight, config.round);
+            fill(config.backroundColor);
+            rect(0, 0, config.width, config.sidebarSize, config.round);
+            rect(0, config.sidebarSize, config.sidebarSize, config.height - config.sidebarSize, config.round);
+            rect(config.sidebarSize + config.wellWidth, config.sidebarSize, config.sidebarSize, config.height - config.sidebarSize, config.round);
         }
     }
     xmlhttp.send();
-}
-
-config.width = 2 * config.sidebarSize + config.wellWidth;
-config.height = config.sidebarSize + config.wellHeight + config.ground;
-
-function setup() {
-    createCanvas(width + 1, height + 1);
-    background(backroundColor);
-    noStroke();
-    fill(wellColor);
-    rect(sidebarSize, sidebarSize, wellWidth, wellHeight, round / 2);
-    fill(backroundColor);
-    rect(0, 0, width, sidebarSize, round);
-    rect(0, sidebarSize, sidebarSize, height - sidebarSize, round);
-    rect(sidebarSize + wellWidth, sidebarSize, sidebarSize, height - sidebarSize, round);
 }
 
 const well = [
@@ -57,7 +56,7 @@ function draw() {
         for (let col = 0; col < well[row].length; col++) {
             //console.log(well[row][col]);
             fill(well[row][col]);
-            rect(sidebarSize + col * scale, sidebarSize + row * scale, scale, scale);
+            rect(config.sidebarSize + col * config.scale, config.sidebarSize + row * config.scale, config.scale, config.scale);
         }
     }
     //});
