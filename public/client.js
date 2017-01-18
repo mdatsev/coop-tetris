@@ -1,28 +1,14 @@
 socket = io();
+config = {};
 
 function setup() {
-    xmlhttp = new XMLHttpRequest();
-    xmlhttp.open("GET", "/config", true);
-    xmlhttp.onreadystatechange = () => {
-        if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
-            console.log(xmlhttp.responseText);
-            config = JSON.parse(xmlhttp.responseText);
-            config.width = 2 * config.sidebarSize + config.wellWidth;
-            config.height = config.sidebarSize + config.wellHeight + config.ground;
-            console.log(config);
-            createCanvas(config.width, config.height);
-            background(config.backroundColor);
-            noStroke();
-            fill(config.wellColor);
-            rect(config.sidebarSize, config.sidebarSize, config.wellWidth, config.wellHeight, config.round);
-            fill(config.backroundColor);
-            rect(0, 0, config.width, config.sidebarSize, config.round);
-            rect(0, config.sidebarSize, config.sidebarSize, config.height - config.sidebarSize, config.round);
-            rect(config.sidebarSize + config.wellWidth, config.sidebarSize, config.sidebarSize, config.height - config.sidebarSize, config.round);
-        }
-    };
-    xmlhttp.send();
-    socket.on('well', function(well) {
+    getConfig()
+        .then(loadConfig)
+        .then(drawCanvasElements)
+        .catch((err) => {
+            console.error('Augh, there was an error!', err.statusText);
+        });
+    socket.on('well', (well) => {
         console.log(well);
         stroke(config.backroundColor);
         for (let row = 0; row < well.matrix.length; row++) {
@@ -46,6 +32,44 @@ function setup() {
     };
 }
 
-function draw() {
+function getConfig() {
+    return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', '/config');
+        xhr.onload = function() {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                resolve(xhr.responseText);
+            } else {
+                reject({
+                    status: xhr.status,
+                    statusText: xhr.statusText
+                });
+            }
+        };
+        xhr.onerror = () => {
+            reject({
+                status: xhr.status,
+                statusText: xhr.statusText
+            });
+        };
+        xhr.send();
+    });
+}
 
+function drawCanvasElements() {
+    createCanvas(config.width, config.height);
+    background(config.backroundColor);
+    noStroke();
+    fill(config.wellColor);
+    rect(config.sidebarSize, config.sidebarSize, config.wellWidth, config.wellHeight, config.round);
+    fill(config.backroundColor);
+    rect(0, 0, config.width, config.sidebarSize, config.round);
+    rect(0, config.sidebarSize, config.sidebarSize, config.height - config.sidebarSize, config.round);
+    rect(config.sidebarSize + config.wellWidth, config.sidebarSize, config.sidebarSize, config.height - config.sidebarSize, config.round);
+}
+
+function loadConfig(data) {
+    config = JSON.parse(data);
+    config.width = 2 * config.sidebarSize + config.wellWidth;
+    config.height = config.sidebarSize + config.wellHeight + config.ground;
 }
