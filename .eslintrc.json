@@ -46,6 +46,6 @@
         "id-length": "off",
         "no-plusplus": "off",
         "no-extra-parens": ["warn", "all", { "nestedBinaryExpressions": false }],
-        "no-mixed-operators": "off",
+        "no-mixed-operators": "off"
     }
 }

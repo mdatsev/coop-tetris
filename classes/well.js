@@ -1,4 +1,5 @@
-var helpers = require("../helpers.js");
+const helpers = require('../helpers.js');
+
 class Well {
     constructor(height, width) {
         this.height = height;
@@ -12,7 +13,11 @@ class Well {
     }
 
     summonTetrimino(tetrimino = this.nextQueue[0]) {
-
+        for (let i = 0; i < tetrimino[0].length; i++) {
+            for (let j = 0; j < tetrimino[0][i].length; j++) {
+                this.well.matrix[i][j] = tetrimino[0][i][j];
+            }
+        }
         this.nextQueue.shift();
     }
 
