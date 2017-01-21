@@ -7,6 +7,7 @@ function create2DArray(rows, cols) {
 
     return arr;
 }
+
 function rgbToHex(r, g, b) {
     function componentToHex(c) {
         var hex = c.toString(16);
@@ -18,6 +19,6 @@ function rgbToHex(r, g, b) {
 }
 
 module.exports = {
-    create2DArray: create2DArray,
-    rgbToHex: rgbToHex
+    create2DArray,
+    rgbToHex
 };

@@ -3,7 +3,7 @@ var Well = require("./classes/well.js");
 
 const express = require('express');
 const app = require('express')();
-const http = require('http').Server(app);
+const http = require('http').createServer(app);
 const io = require('socket.io')(http);
 const path = require('path');
 const config = require('./config');
@@ -38,7 +38,7 @@ http.listen(3000, () => {
 });
 
 io.on('connection', function(socket) {
-    well = new Well(10, 22);
+    //well = new Well(10, 22);
     //demoCounter = 0;
     //setInterval(() => {
     //    for (let row = 0; row < well.matrix.length; row++) {
