@@ -39,16 +39,16 @@ http.listen(3000, () => {
 
 io.on('connection', function(socket) {
     well = new Well(10, 22);
-    demoCounter = 0;
-    setInterval(() => {
-        for (let row = 0; row < well.matrix.length; row++) {
-            for (let col = 0; col < well.matrix[row].length; col++) {
-                well.matrix[row][col] = helpers.rgbToHex(row + demoCounter, col + demoCounter, 100);
-            }
-        }
-        socket.emit('well', well);
-        demoCounter++;
-    }, 100);
+    //demoCounter = 0;
+    //setInterval(() => {
+    //    for (let row = 0; row < well.matrix.length; row++) {
+    //        for (let col = 0; col < well.matrix[row].length; col++) {
+    //            well.matrix[row][col] = helpers.rgbToHex(row + demoCounter, col + demoCounter, 100);
+    //        }
+    //    }
+    //    socket.emit('well', well);
+    //    demoCounter++;
+    //}, 100);
     socket.on('key press', keyPressHandler);
     console.log(`New connection: ${socket.id}`);
     socket.on('disconnect', () => {
