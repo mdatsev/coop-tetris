@@ -22,7 +22,7 @@
         "no-console": "off",
         "no-undef": "off",
         "eol-last": ["error", "never"],
-        "no-magic-numbers": "warn",
+        "no-magic-numbers": ["error", { "ignore": [0] }],
         "no-use-before-define": "off",
         "no-bitwise": "warn",
         "dot-location": ["error", "property"],
