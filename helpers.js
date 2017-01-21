@@ -1,5 +1,5 @@
 function create2DArray(rows, cols) {
-    var arr = [];
+    const arr = [];
 
     for (var i = 0; i < rows; i++) {
         arr[i] = new Array(cols);
@@ -9,7 +9,7 @@ function create2DArray(rows, cols) {
 }
 function rgbToHex(r, g, b) {
     function componentToHex(c) {
-        var hex = c.toString(16);
+        const hex = c.toString(16);
 
         return hex.length === 1 ? '0' + hex : hex;
     }
@@ -18,6 +18,6 @@ function rgbToHex(r, g, b) {
 }
 
 module.exports = {
-    create2DArray: create2DArray,
-    rgbToHex: rgbToHex
+    create2DArray,
+    rgbToHex
 };

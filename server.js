@@ -1,12 +1,11 @@
-var helpers = require("./helpers.js");
-var Well = require("./classes/well.js");
-
-const express = require('express');
-const app = require('express')();
-const http = require('http').Server(app);
-const io = require('socket.io')(http);
-const path = require('path');
-const config = require('./config');
+const helpers = require('./helpers.js'),
+ Well = require('./classes/well.js'),
+ express = require('express');
+const app = require('express')(),
+ http = require('http').server(app),
+ io = require('socket.io')(http);
+const path = require('path'),
+ config = require('./config');
 
 function keyPressHandler(keyPress) {
     switch (keyPress) {
