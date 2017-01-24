@@ -41,7 +41,7 @@ http.listen(3000, () => {
 
 io.on('connection', function (socket) {
     well = new Well(10, 22);
-    well.summonTetrimino(new Tetrimino(tetriminos.S, "#00FF00"));
+    well.summonTetrimino(new Tetrimino(tetriminos.S, "#00FF00", 5, 1));
     socket.emit('well', well.getWell());
     socket.on('key press', keyPressHandler);
     console.log(`New connection: ${socket.id}`);

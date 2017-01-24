@@ -1,10 +1,10 @@
 class Tetrimino {
-    constructor(rotations, color) {
+    constructor(rotations, color, x, y) {
         this.rotations = rotations;
         this.color = color;
         this.currentRotationIndex = 0;
-        this.x = 0;
-        this.y = 0;
+        this.x = x;
+        this.y = y;
     }
 
     currentRotation() {
