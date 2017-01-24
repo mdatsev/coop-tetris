@@ -1,6 +1,14 @@
 class Tetrimino {
-    constructor(matrix) {
-        this.matrix = matrix;
+    constructor(rotations, color) {
+        this.rotations = rotations;
+        this.color = color;
+        this.currentRotationIndex = 0;
+        this.x = 0;
+        this.y = 0;
+    }
+
+    currentRotation() {
+        return this.rotations[this.currentRotationIndex];
     }
 }
 

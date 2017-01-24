@@ -18,24 +18,46 @@
         "sort-keys": "off",
         "require-jsdoc": "off",
         "func-style": "off",
-        "quotes": ["warn", "single"],
+        "quotes": [
+            "warn",
+            "single"
+        ],
         "no-console": "off",
         "no-undef": "off",
-        "eol-last": ["error", "never"],
-        "no-magic-numbers": ["error", { "ignore": [0] }],
+        "eol-last": [
+            "error",
+            "never"
+        ],
+        "no-magic-numbers": [
+            "error",
+            {
+                "ignore": [
+                    0
+                ]
+            }
+        ],
         "no-use-before-define": "off",
         "no-bitwise": "warn",
-        "dot-location": ["error", "property"],
+        "dot-location": [
+            "error",
+            "property"
+        ],
         "sort-vars": "off",
-        "padded-blocks": ["error", "never"],
+        "padded-blocks": [
+            "error",
+            "never"
+        ],
         "capitalized-comments": "off",
         "one-var": "warn",
         "no-var": "warn",
         "spaced-comment": "off",
         "prefer-arrow-callback": "warn",
         "func-names": "warn",
-        "newline-after-var": "warn",
-        "quote-props": ["error", "as-needed"],
+        "newline-after-var": "off",
+        "quote-props": [
+            "error",
+            "as-needed"
+        ],
         "object-curly-spacing": "off",
         "max-params": "off",
         "no-ternary": "off",
@@ -45,7 +67,16 @@
         "linebreak-style": "off",
         "id-length": "off",
         "no-plusplus": "off",
-        "no-extra-parens": ["warn", "all", { "nestedBinaryExpressions": false }],
-        "no-mixed-operators": "off"
+        "no-extra-parens": [
+            "warn",
+            "all",
+            {
+                "nestedBinaryExpressions": false
+            }
+        ],
+        "no-mixed-operators": "off",
+        "newline-before-return": "off",
+        "max-len": "warn",
+        "max-statements": "warn"
     }
 }

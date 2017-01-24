@@ -23,7 +23,6 @@ function loadUserSettings() {
 
 function addSocketEmitters() {
     document.onkeydown = (event) => {
-        console.log(userSettings.KEY_UP);
         if (event.keyCode === userSettings.KEY_UP) {
             socket.emit('key press', 'UP');
         } else if (event.keyCode === userSettings.KEY_DOWN) {
@@ -39,9 +38,9 @@ function addSocketEmitters() {
 function addSocketEventListeners() {
     socket.on('well', (well) => {
         stroke(config.backroundColor);
-        for (let row = 0; row < well.matrix.length; row++) {
-            for (let col = 0; col < well.matrix[row].length; col++) {
-                fill(well.matrix[row][col]);
+        for (let row = 0; row < well.length; row++) {
+            for (let col = 0; col < well[row].length; col++) {
+                fill(well[row][col] || config.wellColor);
                 rect(config.sidebarSize + (col * config.scale),
                     config.sidebarSize + (row * config.scale),
                     config.scale,
@@ -74,6 +73,13 @@ function requestConfig() {
         };
         xhr.send();
     });
+}
+
+function loadConfig(data) {
+    config = JSON.parse(data);
+
+    config.width = 2 * config.sidebarSize + config.wellWidth;
+    config.height = config.sidebarSize + config.wellHeight + config.ground;
 }
 
 function drawCanvasElements() {
@@ -116,13 +122,4 @@ function drawWellPanel() {
         config.sidebarSize,
         config.wellWidth,
         config.wellHeight);
-}
-
-function loadConfig(data) {
-    config = JSON.parse(data);
-
-    config.width = 2 * config.sidebarSize + config.wellWidth;
-    config.height = config.sidebarSize + config.wellHeight + config.ground;
-
-    return config;
 }

@@ -1,5 +1,6 @@
-var helpers = require("./helpers.js");
-var Well = require("./classes/well.js");
+var helpers = require("./helpers");
+var Well = require("./classes/well");
+var Tetrimino = require('./classes/tetrimino');
 
 const express = require('express');
 const app = require('express')();
@@ -7,6 +8,7 @@ const http = require('http').createServer(app);
 const io = require('socket.io')(http);
 const path = require('path');
 const config = require('./config');
+const tetriminos = require('./tetriminos');
 
 function keyPressHandler(keyPress) {
     switch (keyPress) {
@@ -27,7 +29,7 @@ function keyPressHandler(keyPress) {
     }
 }
 
-app.get('/config', function(req, res) {
+app.get('/config', function (req, res) {
     res.send(config);
 });
 
@@ -37,18 +39,10 @@ http.listen(3000, () => {
     console.log('listening...');
 });
 
-io.on('connection', function(socket) {
-    //well = new Well(10, 22);
-    //demoCounter = 0;
-    //setInterval(() => {
-    //    for (let row = 0; row < well.matrix.length; row++) {
-    //        for (let col = 0; col < well.matrix[row].length; col++) {
-    //            well.matrix[row][col] = helpers.rgbToHex(row + demoCounter, col + demoCounter, 100);
-    //        }
-    //    }
-    //    socket.emit('well', well);
-    //    demoCounter++;
-    //}, 100);
+io.on('connection', function (socket) {
+    well = new Well(10, 22);
+    well.summonTetrimino(new Tetrimino(tetriminos.S, "#00FF00"));
+    socket.emit('well', well.getWell());
     socket.on('key press', keyPressHandler);
     console.log(`New connection: ${socket.id}`);
     socket.on('disconnect', () => {

@@ -6,6 +6,7 @@ class Well {
         this.width = width;
         this.matrix = helpers.create2DArray(width, height);
         this.nextQueue = [];
+        this.activeTetriminos = [];
     }
 
     addNext(tetrimino) {
@@ -13,12 +14,47 @@ class Well {
     }
 
     summonTetrimino(tetrimino = this.nextQueue[0]) {
-        for (let i = 0; i < tetrimino[0].length; i++) {
-            for (let j = 0; j < tetrimino[0][i].length; j++) {
-                this.well.matrix[i][j] = tetrimino[0][i][j];
+        if (this.checkCollision(tetrimino.currentRotation())) {
+            this.activeTetriminos.push(tetrimino);
+            this.nextQueue.shift();
+            return true;
+        }
+        return false;
+    }
+
+    checkCollision(arr) {
+        for (let i = 0; i < arr.length; i++) {
+            for (let j = 0; j < arr[i].length; j++) {
+                if (arr[i][j] && this.matrix[i][j]) {
+                    return false;
+                }
             }
         }
-        this.nextQueue.shift();
+        return true;
+    }
+
+    rotateTetrimino(index) {
+
+    }
+
+    getWell() {
+        const well = this.matrix;
+        for (let i = 0; i < this.matrix.length; i++) {
+            for (let j = 0; j < this.matrix[i].length; j++) {
+                well[i][j] = this.matrix[i][j];
+            }
+        }
+
+        for (let i = 0; i < this.activeTetriminos.length; i++) {
+            for (let j = 0; j < this.activeTetriminos[i].currentRotation().length; j++) {
+                for (let k = 0; k < this.activeTetriminos[i].currentRotation()[j].length; k++) {
+                    if (this.activeTetriminos[i].currentRotation()[j][k]) {
+                        well[j][k] = this.activeTetriminos[i].color;
+                    }
+                }
+            }
+        }
+        return well;
     }
 
     step() {
