@@ -14,7 +14,7 @@ class Well {
     }
 
     summonTetrimino(tetrimino = this.nextQueue[0]) {
-        if (this.checkCollision(tetrimino.currentRotation())) {
+        if (this.checkCollision(tetrimino.currentRotation(), tetrimino.x, tetrimino.y)) {
             this.activeTetriminos.push(tetrimino);
             this.nextQueue.shift();
             return true;
@@ -22,10 +22,11 @@ class Well {
         return false;
     }
 
-    checkCollision(arr) {
+    checkCollision(arr, x, y) {
         for (let i = 0; i < arr.length; i++) {
             for (let j = 0; j < arr[i].length; j++) {
-                if (arr[i][j] && this.matrix[i][j]) {
+                //DOesnt work
+                if ((arr[i][j] && this.matrix[i + y][j + x]) || ((i + y) > this.matrix.height - 1) || ((i + x) > this.matrix.width - 1)) {
                     return false;
                 }
             }
@@ -38,7 +39,11 @@ class Well {
     }
 
     getWell() {
-        const well = this.matrix;
+
+        const well = [];
+        for (let i = 0; i < this.matrix.length; i++) {
+            well[i] = this.matrix[i].slice();
+        }
 
         for (let i = 0; i < this.matrix.length; i++) {
             for (let j = 0; j < this.matrix[i].length; j++) {
@@ -60,7 +65,11 @@ class Well {
     }
 
     step() {
-
+        for (let i = 0; i < this.activeTetriminos.length; i++) {
+            if (this.checkCollision(this.activeTetriminos[i], this.activeTetriminos[i].x, this.activeTetriminos[i].y)) {
+                this.activeTetriminos[i].y++;
+            }
+        }
     }
 }
 

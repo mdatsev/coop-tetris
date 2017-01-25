@@ -40,9 +40,12 @@ http.listen(3000, () => {
 });
 
 io.on('connection', function (socket) {
-    well = new Well(10, 22);
-    well.summonTetrimino(new Tetrimino(tetriminos.S, "#00FF00", 5, 1));
-    socket.emit('well', well.getWell());
+    const well = new Well(10, 22);
+    well.summonTetrimino(new Tetrimino(tetriminos.S, '#00FF00', 0, 0));
+    setInterval(() => {
+        well.step();
+        socket.emit('well', well.getWell());
+    }, 100);
     socket.on('key press', keyPressHandler);
     console.log(`New connection: ${socket.id}`);
     socket.on('disconnect', () => {

@@ -36,18 +36,20 @@ function addSocketEmitters() {
 }
 
 function addSocketEventListeners() {
-    socket.on('well', (well) => {
-        stroke(config.backroundColor);
-        for (let row = 0; row < well.length; row++) {
-            for (let col = 0; col < well[row].length; col++) {
-                fill(well[row][col] || config.wellColor);
-                rect(config.sidebarSize + (col * config.scale),
-                    config.sidebarSize + (row * config.scale),
-                    config.scale,
-                    config.scale);
-            }
+    socket.on('well', drawWell);
+}
+
+function drawWell(well) {
+    stroke(config.backroundColor);
+    for (let row = 0; row < well.length; row++) {
+        for (let col = 0; col < well[row].length; col++) {
+            fill(well[row][col] || config.wellColor);
+            rect(config.sidebarSize + (col * config.scale),
+                config.sidebarSize + (row * config.scale),
+                config.scale,
+                config.scale);
         }
-    });
+    }
 }
 
 function requestConfig() {
