@@ -40,6 +40,7 @@ function addSocketEventListeners() {
 }
 
 function drawWell(well) {
+    console.log(well);
     stroke(config.backroundColor);
     for (let row = 0; row < well.length; row++) {
         for (let col = 0; col < well[row].length; col++) {

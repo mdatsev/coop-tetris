@@ -41,7 +41,12 @@ http.listen(3000, () => {
 
 io.on('connection', function (socket) {
     const well = new Well(10, 22);
-    well.summonTetrimino(new Tetrimino(tetriminos.S, '#00FF00', 0, 0));
+    well.summonTetrimino(new Tetrimino(tetriminos.T, '#00FF00', 0, 0));
+    well.addNext(new Tetrimino(tetriminos.Z, '#FF0000', 2, 0), 0);
+    well.addNext(new Tetrimino(tetriminos.I, '#0000FF', 0, 0), 0);
+    well.addNext(new Tetrimino(tetriminos.T, '#0F0F0F', 1, 0), 0);
+    well.addNext(new Tetrimino(tetriminos.L, '#F0FF0F', 5, 0), 0);
+    well.addNext(new Tetrimino(tetriminos.L, '#F0FF0F', 4, 0), 0);
     setInterval(() => {
         well.step();
         socket.emit('well', well.getWell());
