@@ -1,36 +1,47 @@
 const helpers = require('../helpers.js');
 
 class Well {
-    constructor(height, width) {
+    constructor(width, height) {
         this.height = height;
         this.width = width;
-        this.matrix = helpers.create2DArray(width, height);
-        this.nextQueue = [];
+        this.matrix = helpers.create2DArray(height, width);
+        this.nextQueues = [[]];
         this.activeTetriminos = [];
     }
 
-    addNext(tetrimino) {
-        this.nextQueue.push(tetrimino);
+    addNext(tetrimino, queueIndex) {
+        this.nextQueues[queueIndex].push(tetrimino);
     }
 
-    summonTetrimino(tetrimino = this.nextQueue[0]) {
-        if (this.checkCollision(tetrimino.currentRotation())) {
+    summonTetrimino(tetrimino) {
+        if (!this.collides(tetrimino.currentRotation(), tetrimino.x, tetrimino.y)) {
             this.activeTetriminos.push(tetrimino);
-            this.nextQueue.shift();
             return true;
         }
         return false;
     }
 
-    checkCollision(arr) {
+    collides(arr, x, y) {
         for (let i = 0; i < arr.length; i++) {
             for (let j = 0; j < arr[i].length; j++) {
-                if (arr[i][j] && this.matrix[i][j]) {
-                    return false;
+                if (((i + y) >= this.height) ||
+                    ((j + x) >= this.width) ||
+                    (arr[i][j] && this.matrix[i + y][j + x])) {
+                    return true;
                 }
             }
         }
-        return true;
+        return false;
+    }
+
+    addToMatrix(arr, x, y, color) {
+        for (let i = 0; i < arr.length; i++) {
+            for (let j = 0; j < arr[i].length; j++) {
+                if (arr[i][j]) {
+                    this.matrix[i + y][j + x] = color;
+                }
+            }
+        }
     }
 
     rotateTetrimino(index) {
@@ -38,7 +49,10 @@ class Well {
     }
 
     getWell() {
-        const well = this.matrix;
+        const well = [];
+        for (let i = 0; i < this.matrix.length; i++) {
+            well[i] = this.matrix[i].slice();
+        }
 
         for (let i = 0; i < this.matrix.length; i++) {
             for (let j = 0; j < this.matrix[i].length; j++) {
@@ -47,10 +61,12 @@ class Well {
         }
 
         for (let i = 0; i < this.activeTetriminos.length; i++) {
-            for (let j = 0; j < this.activeTetriminos[i].currentRotation().length; j++) {
-                for (let k = 0; k < this.activeTetriminos[i].currentRotation()[j].length; k++) {
-                    if (this.activeTetriminos[i].currentRotation()[j][k]) {
-                        well[j + this.activeTetriminos[i].y][k + this.activeTetriminos[i].x] = this.activeTetriminos[i].color;
+            const t = this.activeTetriminos[i];
+            for (let j = 0; j < t.currentRotation().length; j++) {
+                const r = t.currentRotation();
+                for (let k = 0; k < r[j].length; k++) {
+                    if (r[j][k]) {
+                        well[j + t.y][k + t.x] = t.color;
                     }
                 }
             }
@@ -60,7 +76,21 @@ class Well {
     }
 
     step() {
+        const fallen = [];
+        for (let i = 0; i < this.activeTetriminos.length; i++) {
+            const t = this.activeTetriminos[i];
+            if (this.collides(t.currentRotation(), t.x, t.y + 1)) {
+                this.addToMatrix(t.currentRotation(), t.x, t.y, t.color);
+                this.activeTetriminos.splice(i, 1);
+                if (this.summonTetrimino(this.nextQueues[i][0])) {
+                    this.nextQueues[i].shift();
+                }
 
+                fallen.push(i);
+            }
+            t.y++;
+        }
+        return fallen;
     }
 }
 

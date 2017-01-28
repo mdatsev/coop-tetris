@@ -40,12 +40,39 @@ http.listen(3000, () => {
 });
 
 io.on('connection', function (socket) {
-    well = new Well(10, 22);
-    well.summonTetrimino(new Tetrimino(tetriminos.S, "#00FF00", 5, 1));
-    socket.emit('well', well.getWell());
+    const well = new Well(10, 22);
+    well.summonTetrimino(randomTetrimino('random', 'random', 0, well.width));
+    well.addNext(randomTetrimino('random', 'random', 0, well.width), 0);
+    setInterval(() => {
+        fallen = well.step();
+        for (let i = 0; i < fallen.length; i++) {
+            well.addNext(randomTetrimino('random', 'random', 0, well.width), fallen[i])
+        }
+        socket.emit('well', well.getWell());
+    }, 50);
     socket.on('key press', keyPressHandler);
     console.log(`New connection: ${socket.id}`);
     socket.on('disconnect', () => {
         console.log(`Disconnected: ${socket.id}`);
     });
 });
+
+function randomTetrimino(color, x, y, wellWidth) {
+    const keys = Object.keys(tetriminos),
+        randomT = tetriminos[
+            keys[
+            Math.floor(Math.random() * keys.length)
+            ]
+        ];
+    if (color === 'random') {
+        color = `#${Math.floor(
+            Math.random() * 16777215
+        ).toString(16)}`;
+    }
+    if (x === 'random') {
+        x = Math.floor(
+            Math.random() * (wellWidth - randomT[0].length)
+        );
+    }
+    return new Tetrimino(randomT, color, x, y);
+}
