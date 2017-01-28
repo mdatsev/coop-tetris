@@ -10,24 +10,6 @@ const path = require('path');
 const config = require('./config');
 const tetriminos = require('./tetriminos');
 
-function keyPressHandler(keyPress) {
-    switch (keyPress) {
-        case 'UP':
-            console.log('TODO UP');
-            break;
-        case 'DOWN':
-            console.log('TODO DOWN');
-            break;
-        case 'LEFT':
-            console.log('TODO LEFT');
-            break;
-        case 'RIGHT':
-            console.log('TODO RIGHT');
-            break;
-        default:
-            break;
-    }
-}
 
 app.get('/config', function (req, res) {
     res.send(config);
@@ -49,8 +31,25 @@ io.on('connection', function (socket) {
             well.addNext(randomTetrimino('random', 'random', 0, well.width), fallen[i])
         }
         socket.emit('well', well.getWell());
-    }, 50);
-    socket.on('key press', keyPressHandler);
+    }, 200);
+    socket.on('key press', (keyPress) => {
+        switch (keyPress) {
+        case 'UP':
+            well.rotateTetrimino(0, 'right');
+            break;
+        case 'DOWN':
+            console.log('TODO DOWN');
+            break;
+        case 'LEFT':
+            console.log('TODO LEFT');
+            break;
+        case 'RIGHT':
+            console.log('TODO RIGHT');
+            break;
+        default:
+            break;
+        }
+    });
     console.log(`New connection: ${socket.id}`);
     socket.on('disconnect', () => {
         console.log(`Disconnected: ${socket.id}`);

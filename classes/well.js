@@ -1,5 +1,4 @@
 const helpers = require('../helpers.js');
-
 class Well {
     constructor(width, height) {
         this.height = height;
@@ -44,8 +43,41 @@ class Well {
         }
     }
 
-    rotateTetrimino(index) {
-
+    rotateTetrimino(tetriminoIndex, rotationMode) {
+        const t = this.activeTetriminos[tetriminoIndex];
+        let rotationIndex = t.currentRotationIndex;
+        if (rotationIndex + 1 < t.rotations.length && rotationMode === 'right') {
+            rotationIndex += 1;
+        } else if (rotationMode === 'right') {
+            rotationIndex = 0;
+        }
+        if (rotationIndex - 1 > 0 && rotationMode === 'left') {
+            rotationIndex -= 1;
+        } else if (rotationMode === 'left') {
+            rotationIndex = t.rotations.length - 1;
+        }
+        if (!this.collides(t.rotations[rotationIndex], t.x, t.y)) {
+           t.currentRotationIndex = rotationIndex;
+        } else if (!this.collides(t.rotations[rotationIndex], t.x, t.y - 1)) {
+            t.currentRotationIndex = rotationIndex;
+            t.y -= 1;
+        } else if (!this.collides(t.rotations[rotationIndex], t.x + 1, t.y - 1)) {
+            t.currentRotationIndex = rotationIndex;
+            t.y -= 1;
+            t.x += 1;
+        } else if (!this.collides(t.rotations[rotationIndex], t.x + 2, t.y - 1)) {
+            t.currentRotationIndex = rotationIndex;
+            t.y -= 1;
+            t.x += 2;
+        } else if (!this.collides(t.rotations[rotationIndex], t.x - 1, t.y - 1)) {
+            t.currentRotationIndex = rotationIndex;
+            t.y -= 1;
+            t.x -= 1;
+        } else if (!this.collides(t.rotations[rotationIndex], t.x - 2, t.y - 1)) {
+            t.currentRotationIndex = rotationIndex;
+            t.y -= 1;
+            t.x -= 2;
+        }
     }
 
     getWell() {
