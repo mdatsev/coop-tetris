@@ -76,17 +76,21 @@ class Well {
     }
 
     step() {
+        const fallen = [];
         for (let i = 0; i < this.activeTetriminos.length; i++) {
             const t = this.activeTetriminos[i];
             if (this.collides(t.currentRotation(), t.x, t.y + 1)) {
                 this.addToMatrix(t.currentRotation(), t.x, t.y, t.color);
-                this.activeTetriminos.shift();
-                this.activeTetriminos.push(this.nextQueues[i][0] || t); // temporary fix
-                this.nextQueues[i].shift();
-            } else {
-                t.y++;
+                this.activeTetriminos.splice(i, 1);
+                if (this.summonTetrimino(this.nextQueues[i][0])) {
+                    this.nextQueues[i].shift();
+                }
+
+                fallen.push(i);
             }
+            t.y++;
         }
+        return fallen;
     }
 }
 
