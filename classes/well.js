@@ -14,7 +14,7 @@ class Well {
     }
 
     summonTetrimino(tetrimino = this.nextQueue[0]) {
-        if (this.collides(tetrimino.currentRotation())) {
+        if (this.checkCollision(tetrimino.currentRotation())) {
             this.activeTetriminos.push(tetrimino);
             this.nextQueue.shift();
             return true;
@@ -22,22 +22,19 @@ class Well {
         return false;
     }
 
-    collides(arr) {
+    checkCollision(arr) {
         for (let i = 0; i < arr.length; i++) {
             for (let j = 0; j < arr[i].length; j++) {
                 if (arr[i][j] && this.matrix[i][j]) {
-                    return true;
+                    return false;
                 }
             }
         }
-        return false;
+        return true;
     }
 
-    rotateTetrimino(tetriminoIndex, rotationIndex) {
-        console.log(this.activeTetriminos);
-        if (!this.collides(this.activeTetriminos[tetriminoIndex].rotations[rotationIndex])) {
-             this.activeTetriminos[terminoIndex].currentRotationIndex = rotationIndex;
-         }
+    rotateTetrimino(index) {
+
     }
 
     getWell() {
