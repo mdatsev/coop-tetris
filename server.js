@@ -31,18 +31,21 @@ let currentRoomID = 0;
 const rooms = [];
 
 io.on('connection', (socket) => {
+<<<<<<< HEAD
     let roomID;
+=======
+    const roomID;
+>>>>>>> 21caeac5abf9cf6ca85fef5fdeff4e4ce4ec12a3
     function joinRoom(room, id) {
         if (!rooms[room]) {
             socket.emit('Error', `room '${room}' does not exist`);
             return;
         }
-
-        if (!rooms[room].isFull()) {
+        socket.join(room);
+        if (!rooms[room].isFull() && rooms[room].players.indexOf(id) === -1) {
             rooms[room].addPlayer(id);
-            socket.join(room);
         }
-
+        socket.emit('roomJoined');
     }
     socket.on('key press', (keyPress) => {
         switch (keyPress) {

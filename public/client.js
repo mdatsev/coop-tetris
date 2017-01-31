@@ -18,7 +18,6 @@ function setup() {
 
     socket.on('roomCreated', (id) => {
         console.log(id);
-        loadGame();
     });
 
     document.getElementById('createRoom').onsubmit = () => {
