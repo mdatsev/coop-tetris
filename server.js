@@ -31,6 +31,7 @@ let currentRoomID = 0;
 const rooms = [];
 
 io.on('connection', (socket) => {
+    let roomID;
     function joinRoom(room, id) {
         if (!rooms[room]) {
             socket.emit('Error', `room '${room}' does not exist`);
@@ -45,16 +46,16 @@ io.on('connection', (socket) => {
     socket.on('key press', (keyPress) => {
         switch (keyPress) {
             case 'UP':
-                well.rotateTetrimino(0, 'right');
+                rooms[roomID].well.rotateTetrimino(0, 'right');
                 break;
             case 'DOWN':
                 console.log('TODO DOWN');
                 break;
             case 'LEFT':
-                console.log('TODO LEFT');
+                rooms[roomID].well.moveLeft(0);
                 break;
             case 'RIGHT':
-                console.log('TODO RIGHT');
+                rooms[roomID].well.moveRight(0);
                 break;
             default:
                 break;
