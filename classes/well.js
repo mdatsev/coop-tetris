@@ -26,7 +26,7 @@ class Well {
                 if (((i + y) >= this.height) ||
                     ((i + y) < 0) ||
                     ((j + x) >= this.width) ||
-                    ((i + y) < 0) ||
+                    ((i + x) < 0) ||
                     (arr[i][j] && this.matrix[i + y][j + x])) {
                     return true;
                 }
@@ -48,7 +48,7 @@ class Well {
     move(x, tetriminoIndex) {
         const t = this.activeTetriminos[tetriminoIndex];
         if (!this.collides(t.currentRotation(), t.x + x, t.y)) {
-           t.x += x;
+            t.x += x;
         }
     }
 
