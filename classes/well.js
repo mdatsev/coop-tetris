@@ -43,6 +43,21 @@ class Well {
         }
     }
 
+    move(x, tetriminoIndex) {
+        const t = this.activeTetriminos[tetriminoIndex];
+        if (!this.collides(t.currentRotation(), t.x + x, t.y)) {
+           t.x += x;
+        }
+    }
+
+    moveLeft(tetriminoIndex) {
+        this.move(-1, tetriminoIndex);
+    }
+
+    moveRight(tetriminoIndex) {
+        this.move(1, tetriminoIndex);
+    }
+
     rotateTetrimino(tetriminoIndex, rotationMode) {
         const t = this.activeTetriminos[tetriminoIndex];
         let rotationIndex = t.currentRotationIndex;
