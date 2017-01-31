@@ -26,7 +26,7 @@ class Well {
                 if (((i + y) >= this.height) ||
                     ((i + y) < 0) ||
                     ((j + x) >= this.width) ||
-                    ((i + x) < 0) ||
+                    ((j + x) < 0) ||
                     (arr[i][j] && this.matrix[i + y][j + x])) {
                     return true;
                 }
