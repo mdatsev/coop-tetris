@@ -36,7 +36,12 @@ io.on('connection', (socket) => {
             socket.emit('Error', `room '${room}' does not exist`);
             return;
         }
-        socket.emit('well', well.getWell());
+
+        if (!rooms[room].isFull()) {
+            rooms[room].addPlayer(id);
+            socket.join(room);
+        }
+
     }
     socket.on('key press', (keyPress) => {
         switch (keyPress) {
@@ -79,8 +84,6 @@ io.on('connection', (socket) => {
                 clearInterval(fullChecker);
             }
         }, 100);
-
-        socket.on('key press', keyPressHandler);
     });
     socket.on('joinRoom', (room) => {
         joinRoom(room, socket.id);
@@ -88,23 +91,23 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         console.log(`Disconnected: ${socket.id}`);
     });
-
-    function randomTetrimino(color, x, y, wellWidth) {
-        const keys = Object.keys(tetriminos),
-            randomT = tetriminos[
-                keys[
-                Math.floor(Math.random() * keys.length)
-                ]
-            ];
-        if (color === 'random') {
-            color = `#${Math.floor(
-                Math.random() * 16777215
-            ).toString(16)}`;
-        }
-        if (x === 'random') {
-            x = Math.floor(
-                Math.random() * (wellWidth - randomT[0].length)
-            );
-        }
-        return new Tetrimino(randomT, color, x, y);
+});
+function randomTetrimino(color, x, y, wellWidth) {
+    const keys = Object.keys(tetriminos),
+        randomT = tetriminos[
+            keys[
+            Math.floor(Math.random() * keys.length)
+            ]
+        ];
+    if (color === 'random') {
+        color = `#${Math.floor(
+            Math.random() * 16777215
+        ).toString(16)}`;
     }
+    if (x === 'random') {
+        x = Math.floor(
+            Math.random() * (wellWidth - randomT[0].length)
+        );
+    }
+    return new Tetrimino(randomT, color, x, y);
+}
