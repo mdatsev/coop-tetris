@@ -36,12 +36,10 @@ io.on('connection', (socket) => {
             socket.emit('Error', `room '${room}' does not exist`);
             return;
         }
-
-        if (!rooms[room].isFull()) {
+        socket.join(room);
+        if (!rooms[room].isFull() && rooms[room].players.indexOf(id) === -1) {
             rooms[room].addPlayer(id);
-            socket.join(room);
         }
-
     }
     socket.on('key press', (keyPress) => {
         switch (keyPress) {
