@@ -24,7 +24,9 @@ class Well {
         for (let i = 0; i < arr.length; i++) {
             for (let j = 0; j < arr[i].length; j++) {
                 if (((i + y) >= this.height) ||
+                    ((i + y) < 0) ||
                     ((j + x) >= this.width) ||
+                    ((i + y) < 0) ||
                     (arr[i][j] && this.matrix[i + y][j + x])) {
                     return true;
                 }
@@ -57,7 +59,7 @@ class Well {
             rotationIndex = t.rotations.length - 1;
         }
         if (!this.collides(t.rotations[rotationIndex], t.x, t.y)) {
-           t.currentRotationIndex = rotationIndex;
+            t.currentRotationIndex = rotationIndex;
         } else if (!this.collides(t.rotations[rotationIndex], t.x, t.y - 1)) {
             t.currentRotationIndex = rotationIndex;
             t.y -= 1;

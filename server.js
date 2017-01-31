@@ -31,7 +31,6 @@ let currentRoomID = 0;
 const rooms = [];
 
 io.on('connection', (socket) => {
-    const roomID;
     function joinRoom(room, id) {
         if (!rooms[room]) {
             socket.emit('Error', `room '${room}' does not exist`);
@@ -63,7 +62,7 @@ io.on('connection', (socket) => {
     });
     console.log(`New connection: ${socket.id}`);
     socket.on('createRoom', (players) => {
-        roomID = currentRoomID++;
+        const roomID = currentRoomID++;
         rooms[roomID] = new Room(players, 10, 22);
         joinRoom(roomID, socket.id);
         rooms[roomID].well.summonTetrimino(randomTetrimino('random', 'random', 0, rooms[roomID].well.width));
