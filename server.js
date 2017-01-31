@@ -1,14 +1,16 @@
-var helpers = require("./helpers");
-var Well = require("./classes/well");
-var Tetrimino = require('./classes/tetrimino');
-
-const express = require('express');
-const app = require('express')();
-const http = require('http').createServer(app);
-const io = require('socket.io')(http);
-const path = require('path');
 const config = require('./config');
 const tetriminos = require('./tetriminos');
+
+const helpers = require('./helpers');
+const Tetrimino = require('./classes/tetrimino');
+const Well = require('./classes/well');
+const Room = require('./classes/room');
+
+const express = require('express');
+const app = express();
+const server = require('http').createServer(app);
+const io = require('socket.io').listen(server);
+const path = require('path');
 
 function keyPressHandler(keyPress) {
     switch (keyPress) {
@@ -29,29 +31,63 @@ function keyPressHandler(keyPress) {
     }
 }
 
-app.get('/config', function (req, res) {
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public/index.html'));
+});
+
+app.get('/config', (req, res) => {
     res.send(config);
 });
 
 app.use(express.static('public'));
 
-http.listen(3000, () => {
+server.listen(3000, () => {
     console.log('listening...');
 });
 
-io.on('connection', function (socket) {
-    const well = new Well(10, 22);
-    well.summonTetrimino(randomTetrimino('random', 'random', 0, well.width));
-    well.addNext(randomTetrimino('random', 'random', 0, well.width), 0);
-    setInterval(() => {
-        fallen = well.step();
-        for (let i = 0; i < fallen.length; i++) {
-            well.addNext(randomTetrimino('random', 'random', 0, well.width), fallen[i])
+let currentRoomID = 0;
+const rooms = [];
+
+io.on('connection', (socket) => {
+    function joinRoom(room, id) {
+        if (!rooms[room]) {
+            socket.emit('Error', `room '${room}' does not exist`);
+            return;
         }
-        socket.emit('well', well.getWell());
-    }, 50);
-    socket.on('key press', keyPressHandler);
+        if (!rooms[room].isFull()) {
+            rooms[room].addPlayer(id);
+        }
+        socket.join(room);
+    }
     console.log(`New connection: ${socket.id}`);
+    socket.on('createRoom', (players) => {
+        const roomID = currentRoomID++;
+        rooms[roomID] = new Room(players, 10, 22);
+        joinRoom(roomID, socket.id);
+        rooms[roomID].well.summonTetrimino(randomTetrimino('random', 'random', 0, rooms[roomID].well.width));
+        for (let i = 0; i < 5; i++) { //todo load from config...
+            rooms[roomID].well.addNext(randomTetrimino('random', 'random', 0, rooms[roomID].well.width), 0);
+        }
+        io.sockets.emit('roomCreated', roomID);
+
+        const fullChecker = setInterval(() => {
+            if (rooms[roomID].isFull()) {
+                setInterval(() => {
+                    const fallen = rooms[roomID].well.step();
+                    for (let i = 0; i < fallen.length; i++) {
+                        rooms[roomID].well.addNext(randomTetrimino('random', 'random', 0, rooms[roomID].well.width), fallen[i]);
+                    }
+                    io.sockets.in(roomID).emit('well', rooms[roomID].well.getWell());
+                }, 50);
+                clearInterval(fullChecker);
+            }
+        }, 100);
+
+        socket.on('key press', keyPressHandler);
+    });
+    socket.on('joinRoom', (room) => {
+        joinRoom(room, socket.id);
+    });
     socket.on('disconnect', () => {
         console.log(`Disconnected: ${socket.id}`);
     });

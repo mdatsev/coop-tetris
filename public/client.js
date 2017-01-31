@@ -1,8 +1,34 @@
 const socket = io();
+
 let config = {},
-    userSettings = {};
+    userSettings = {},
+    players = 2;
 
 function setup() {
+    document.getElementById('joinRoom').onsubmit = () => {
+        socket.emit('joinRoom', document.getElementById('room').value);
+        return false;
+    };
+
+    socket.on('Error', (data) => {
+        console.log(data);
+    });
+
+    socket.on('roomJoined', loadGame);
+
+    socket.on('roomCreated', (id) => {
+        console.log(id);
+        loadGame();
+    });
+
+    document.getElementById('createRoom').onsubmit = () => {
+        players = document.getElementById('players').value || players;
+        socket.emit('createRoom', players);
+        return false;
+    };
+}
+
+function loadGame() {
     requestConfig()
         .then(loadConfig)
         .then(loadUserSettings)
@@ -40,7 +66,6 @@ function addSocketEventListeners() {
 }
 
 function drawWell(well) {
-    console.log(well);
     stroke(config.backroundColor);
     for (let row = 0; row < well.length; row++) {
         for (let col = 0; col < well[row].length; col++) {
@@ -81,7 +106,7 @@ function requestConfig() {
 function loadConfig(data) {
     config = JSON.parse(data);
 
-    config.width = 2 * config.sidebarSize + config.wellWidth;
+    config.width = 2 * config.sidebarSize + config.wellWidth * players;
     config.height = config.sidebarSize + config.wellHeight + config.ground;
 }
 
@@ -112,7 +137,7 @@ function drawLeftPanel() {
 
 function drawRightPanel() {
     rect(
-        config.sidebarSize + config.wellWidth,
+        config.sidebarSize + config.wellWidth * players,
         config.sidebarSize,
         config.sidebarSize,
         config.height - config.sidebarSize);
@@ -123,6 +148,6 @@ function drawWellPanel() {
     rect(
         config.sidebarSize,
         config.sidebarSize,
-        config.wellWidth,
+        config.wellWidth * players,
         config.wellHeight);
 }
