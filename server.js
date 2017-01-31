@@ -63,7 +63,7 @@ io.on('connection', (socket) => {
     });
     console.log(`New connection: ${socket.id}`);
     socket.on('createRoom', (players) => {
-        const roomID = currentRoomID++;
+        roomID = currentRoomID++;
         rooms[roomID] = new Room(players, 10, 22);
         joinRoom(roomID, socket.id);
         rooms[roomID].well.summonTetrimino(randomTetrimino('random', 'random', 0, rooms[roomID].well.width));
