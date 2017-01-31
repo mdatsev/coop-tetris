@@ -12,24 +12,6 @@ const server = require('http').createServer(app);
 const io = require('socket.io').listen(server);
 const path = require('path');
 
-function keyPressHandler(keyPress) {
-    switch (keyPress) {
-        case 'UP':
-            console.log('TODO UP');
-            break;
-        case 'DOWN':
-            console.log('TODO DOWN');
-            break;
-        case 'LEFT':
-            console.log('TODO LEFT');
-            break;
-        case 'RIGHT':
-            console.log('TODO RIGHT');
-            break;
-        default:
-            break;
-    }
-}
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public/index.html'));
@@ -54,11 +36,26 @@ io.on('connection', (socket) => {
             socket.emit('Error', `room '${room}' does not exist`);
             return;
         }
-        if (!rooms[room].isFull()) {
-            rooms[room].addPlayer(id);
-        }
-        socket.join(room);
+        socket.emit('well', well.getWell());
     }
+    socket.on('key press', (keyPress) => {
+        switch (keyPress) {
+            case 'UP':
+                well.rotateTetrimino(0, 'right');
+                break;
+            case 'DOWN':
+                console.log('TODO DOWN');
+                break;
+            case 'LEFT':
+                console.log('TODO LEFT');
+                break;
+            case 'RIGHT':
+                console.log('TODO RIGHT');
+                break;
+            default:
+                break;
+        }
+    });
     console.log(`New connection: ${socket.id}`);
     socket.on('createRoom', (players) => {
         const roomID = currentRoomID++;
@@ -91,24 +88,23 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         console.log(`Disconnected: ${socket.id}`);
     });
-});
 
-function randomTetrimino(color, x, y, wellWidth) {
-    const keys = Object.keys(tetriminos),
-        randomT = tetriminos[
-            keys[
-            Math.floor(Math.random() * keys.length)
-            ]
-        ];
-    if (color === 'random') {
-        color = `#${Math.floor(
-            Math.random() * 16777215
-        ).toString(16)}`;
+    function randomTetrimino(color, x, y, wellWidth) {
+        const keys = Object.keys(tetriminos),
+            randomT = tetriminos[
+                keys[
+                Math.floor(Math.random() * keys.length)
+                ]
+            ];
+        if (color === 'random') {
+            color = `#${Math.floor(
+                Math.random() * 16777215
+            ).toString(16)}`;
+        }
+        if (x === 'random') {
+            x = Math.floor(
+                Math.random() * (wellWidth - randomT[0].length)
+            );
+        }
+        return new Tetrimino(randomT, color, x, y);
     }
-    if (x === 'random') {
-        x = Math.floor(
-            Math.random() * (wellWidth - randomT[0].length)
-        );
-    }
-    return new Tetrimino(randomT, color, x, y);
-}
