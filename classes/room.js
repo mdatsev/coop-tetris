@@ -8,7 +8,7 @@ class Room {
     }
 
     addPlayer(id) {
-        this.players.push(id);
+        return this.players.push(id) - 1;
     }
 
     isFull() {

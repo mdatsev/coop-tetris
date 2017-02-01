@@ -31,39 +31,30 @@ let currentRoomID = 0;
 const rooms = [];
 
 io.on('connection', (socket) => {
-    let roomID;
-    function joinRoom(room, id) {
-        socket.leave(roomID);
-        if (!rooms[room]) {
-            socket.emit('Error', `room '${room}' does not exist`);
-            return;
-        }
-        socket.join(room);
-        if (!rooms[room].isFull() && rooms[room].players.indexOf(id) === -1) {
-            roomID = room;
-            rooms[room].addPlayer(id);
-        }
-        socket.emit('roomJoined', rooms[room].maxPlayers);
-    }
+    console.log(`New connection: ${socket.id}`);
+    let roomID,
+        playerID;
+    socket.on('getConfig', () => {
+        socket.emit('getConfigSuccess', config);
+    });
     socket.on('key press', (keyPress) => {
         switch (keyPress) {
             case 'UP':
-                rooms[roomID].well.rotateTetrimino(roomID, 'right');
+                rooms[roomID].well.rotateTetrimino(playerID, 'right');
                 break;
             case 'DOWN':
                 console.log('TODO DOWN');
                 break;
             case 'LEFT':
-                rooms[roomID].well.moveLeft(roomID);
+                rooms[roomID].well.moveLeft(playerID);
                 break;
             case 'RIGHT':
-                rooms[roomID].well.moveRight(roomID);
+                rooms[roomID].well.moveRight(playerID);
                 break;
             default:
                 break;
         }
     });
-    console.log(`New connection: ${socket.id}`);
     socket.on('createRoom', (players) => {
         roomID = currentRoomID++;
         rooms[roomID] = new Room(players, 10, 22);
@@ -93,6 +84,19 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         console.log(`Disconnected: ${socket.id}`);
     });
+    function joinRoom(room, id) {
+        socket.leave(roomID);
+        if (!rooms[room]) {
+            socket.emit('Error', `room '${room}' does not exist`);
+            return;
+        }
+        socket.join(room);
+        if (!rooms[room].isFull() && rooms[room].players.indexOf(id) === -1) {
+            roomID = room;
+            playerID = rooms[room].addPlayer(id);
+        }
+        socket.emit('roomJoined', rooms[room].maxPlayers);
+    }
 });
 function randomTetrimino(color, x, y, wellWidth) {
     const keys = Object.keys(tetriminos),

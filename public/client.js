@@ -2,48 +2,20 @@ const socket = io();
 
 let config = {},
     userSettings = {},
-    players = 2,
-    gameIsLoaded = false;
+    players = 2;
 
 function setup() {
-    document.getElementById('joinRoom').onsubmit = () => {
-        socket.emit('joinRoom', document.getElementById('room').value);
-        return false;
-    };
-
-    socket.on('Error', (data) => {
-        console.log(data);
-    });
-
-    socket.on('roomJoined', (maxPlayers) => {
-        players = maxPlayers;
-        loadGame();
-    });
-
-    socket.on('roomCreated', (id) => {
-        console.log(id);
-    });
-
-    document.getElementById('createRoom').onsubmit = () => {
-        players = document.getElementById('players').value || players;
-        socket.emit('createRoom', players);
-        return false;
-    };
+    addSocketEventListeners();
+    addSocketEmitters();
 }
 
 function loadGame() {
-    if (!gameIsLoaded) {
-        requestConfig()
-            .then(loadConfig)
-            .then(loadUserSettings)
-            .then(drawCanvasElements)
-            .catch((err) => {
-                console.error(`Err getting config:${err.status} ${err.statusText}`);
-            });
-        addSocketEventListeners();
-        addSocketEmitters();
-        gameIsLoaded = true;
-    }
+    socket.on('getConfigSuccess', (data) => {
+        loadConfig(data);
+        loadUserSettings();
+        drawCanvasElements();
+    });
+    socket.emit('getConfig');
 }
 
 function loadUserSettings() {
@@ -65,10 +37,29 @@ function addSocketEmitters() {
             socket.emit('key press', 'RIGHT');
         }
     };
+    document.getElementById('joinRoom').onsubmit = () => {
+        socket.emit('joinRoom', document.getElementById('room').value);
+        return false;
+    };
+    document.getElementById('createRoom').onsubmit = () => {
+        players = document.getElementById('players').value || players;
+        socket.emit('createRoom', players);
+        return false;
+    };
 }
 
 function addSocketEventListeners() {
     socket.on('well', drawWell);
+    socket.on('Error', (data) => {
+        console.log(data);
+    });
+    socket.on('roomJoined', (maxPlayers) => {
+        players = maxPlayers;
+        loadGame();
+    });
+    socket.on('roomCreated', (id) => {
+        console.log(id);
+    });
 }
 
 function drawWell(well) {
@@ -84,33 +75,8 @@ function drawWell(well) {
     }
 }
 
-function requestConfig() {
-    return new Promise((resolve, reject) => {
-        const xhr = new XMLHttpRequest();
-
-        xhr.open('GET', '/config');
-        xhr.onload = () => {
-            if (xhr.status >= 200 && xhr.status < 300) {
-                resolve(xhr.responseText);
-            } else {
-                reject({
-                    status: xhr.status,
-                    statusText: xhr.statusText
-                });
-            }
-        };
-        xhr.onerror = () => {
-            reject({
-                status: xhr.status,
-                statusText: xhr.statusText
-            });
-        };
-        xhr.send();
-    });
-}
-
 function loadConfig(data) {
-    config = JSON.parse(data);
+    config = data;
 
     config.width = 2 * config.sidebarSize + config.wellWidth * players;
     config.height = config.sidebarSize + config.wellHeight + config.ground;
