@@ -18,7 +18,7 @@ server.listen(3000, () => {
     console.log('listening...');
 });
 
-let currentRoomID = 0;
+let lastRoomID = 0;
 const rooms = [];
 
 io.on('connection', (socket) => {
@@ -47,12 +47,15 @@ io.on('connection', (socket) => {
         }
     });
     socket.on('createRoom', (players) => {
-        roomID = currentRoomID++;
+        roomID = ++lastRoomID;
         rooms[roomID] = new Room(players, 10, 22);
         joinRoom(roomID, socket.id);
-        rooms[roomID].well.summonTetrimino(randomTetrimino('random', 'random', 0, rooms[roomID].well.width));
-        for (let i = 0; i < 5; i++) { //todo load from config...
-            rooms[roomID].well.addNext(randomTetrimino('random', 'random', 0, rooms[roomID].well.width), 0);
+        for (let i = 0; i < players; i++) {
+            rooms[roomID].well.summonTetrimino(randomTetrimino('random', 'random', 0, rooms[roomID].well.width), i);
+            //TODO load from config...
+            for (let i = 0; i < 5; i++) {
+                rooms[roomID].well.addNext(randomTetrimino('random', 'random', 0, rooms[roomID].well.width), i);
+            }
         }
         io.sockets.emit('roomCreated', roomID);
 
@@ -76,7 +79,10 @@ io.on('connection', (socket) => {
         console.log(`Disconnected: ${socket.id}`);
     });
     function joinRoom(room, id) {
-        socket.leave(roomID);
+        if (roomID) {
+            socket.leave(roomID);
+            rooms[roomID].removePlayer(id);
+        }
         if (!rooms[room]) {
             socket.emit('Error', `room '${room}' does not exist`);
             return;

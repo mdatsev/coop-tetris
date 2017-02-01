@@ -11,6 +11,10 @@ class Room {
         return this.players.push(id) - 1;
     }
 
+    removePlayer(id) {
+        this.players.splice(id);
+    }
+
     isFull() {
         return this.players.length >= this.maxPlayers;
     }

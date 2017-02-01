@@ -9,12 +9,16 @@ class Well {
     }
 
     addNext(tetrimino, queueIndex) {
+
+        if (!this.nextQueues[queueIndex]) {
+            this.nextQueues[queueIndex] = [];
+        }
         this.nextQueues[queueIndex].push(tetrimino);
     }
 
-    summonTetrimino(tetrimino) {
+    summonTetrimino(tetrimino, index) {
         if (!this.collides(tetrimino.currentRotation(), tetrimino.x, tetrimino.y)) {
-            this.activeTetriminos.push(tetrimino);
+            this.activeTetriminos[index] = tetrimino;
             return true;
         }
         return false;
@@ -130,11 +134,10 @@ class Well {
             const t = this.activeTetriminos[i];
             if (this.collides(t.currentRotation(), t.x, t.y + 1)) {
                 this.addToMatrix(t.currentRotation(), t.x, t.y, t.color);
-                this.activeTetriminos.splice(i, 1);
-                if (this.summonTetrimino(this.nextQueues[i][0])) {
+                this.activeTetriminos[i] = [];
+                if (this.summonTetrimino(this.nextQueues[i][0], i)) {
                     this.nextQueues[i].shift();
                 }
-
                 fallen.push(i);
             }
             t.y++;
