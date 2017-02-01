@@ -33,29 +33,31 @@ const rooms = [];
 io.on('connection', (socket) => {
     let roomID;
     function joinRoom(room, id) {
+        socket.leave(roomID);
         if (!rooms[room]) {
             socket.emit('Error', `room '${room}' does not exist`);
             return;
         }
         socket.join(room);
         if (!rooms[room].isFull() && rooms[room].players.indexOf(id) === -1) {
+            roomID = room;
             rooms[room].addPlayer(id);
         }
-        socket.emit('roomJoined');
+        socket.emit('roomJoined', rooms[room].maxPlayers);
     }
     socket.on('key press', (keyPress) => {
         switch (keyPress) {
             case 'UP':
-                rooms[roomID].well.rotateTetrimino(0, 'right');
+                rooms[roomID].well.rotateTetrimino(roomID, 'right');
                 break;
             case 'DOWN':
                 console.log('TODO DOWN');
                 break;
             case 'LEFT':
-                rooms[roomID].well.moveLeft(0);
+                rooms[roomID].well.moveLeft(roomID);
                 break;
             case 'RIGHT':
-                rooms[roomID].well.moveRight(0);
+                rooms[roomID].well.moveRight(roomID);
                 break;
             default:
                 break;
@@ -80,7 +82,7 @@ io.on('connection', (socket) => {
                         rooms[roomID].well.addNext(randomTetrimino('random', 'random', 0, rooms[roomID].well.width), fallen[i]);
                     }
                     io.sockets.in(roomID).emit('well', rooms[roomID].well.getWell());
-                }, 50);
+                }, 100);
                 clearInterval(fullChecker);
             }
         }, 100);

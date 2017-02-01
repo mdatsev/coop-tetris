@@ -1,9 +1,9 @@
 const Well = require('./well');
 
 class Room {
-    constructor(numberOfPlayers, widthPerPlayer, height) {
-        this.numberOfPlayers = numberOfPlayers;
-        this.well = new Well(numberOfPlayers * widthPerPlayer, height);
+    constructor(maxPlayers, widthPerPlayer, height) {
+        this.maxPlayers = maxPlayers;
+        this.well = new Well(maxPlayers * widthPerPlayer, height);
         this.players = [];
     }
 
@@ -12,7 +12,7 @@ class Room {
     }
 
     isFull() {
-        return this.players.length >= this.numberOfPlayers;
+        return this.players.length >= this.maxPlayers;
     }
 }
 

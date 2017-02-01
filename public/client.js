@@ -2,7 +2,8 @@ const socket = io();
 
 let config = {},
     userSettings = {},
-    players = 2;
+    players = 2,
+    gameIsLoaded = false;
 
 function setup() {
     document.getElementById('joinRoom').onsubmit = () => {
@@ -14,7 +15,10 @@ function setup() {
         console.log(data);
     });
 
-    socket.on('roomJoined', loadGame);
+    socket.on('roomJoined', (maxPlayers) => {
+        players = maxPlayers;
+        loadGame();
+    });
 
     socket.on('roomCreated', (id) => {
         console.log(id);
@@ -28,15 +32,18 @@ function setup() {
 }
 
 function loadGame() {
-    requestConfig()
-        .then(loadConfig)
-        .then(loadUserSettings)
-        .then(drawCanvasElements)
-        .catch((err) => {
-            console.error(`Err getting config:${err.status} ${err.statusText}`);
-        });
-    addSocketEventListeners();
-    addSocketEmitters();
+    if (!gameIsLoaded) {
+        requestConfig()
+            .then(loadConfig)
+            .then(loadUserSettings)
+            .then(drawCanvasElements)
+            .catch((err) => {
+                console.error(`Err getting config:${err.status} ${err.statusText}`);
+            });
+        addSocketEventListeners();
+        addSocketEmitters();
+        gameIsLoaded = true;
+    }
 }
 
 function loadUserSettings() {
