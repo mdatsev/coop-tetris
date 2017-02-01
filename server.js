@@ -23,54 +23,41 @@ const rooms = [];
 
 io.on('connection', (socket) => {
     console.log(`New connection: ${socket.id}`);
-    let roomID,
-        playerID;
+    let myRoom = false,
+        playerID = null;
     socket.on('getConfig', () => {
         socket.emit('getConfigSuccess', config);
     });
     socket.on('key press', (keyPress) => {
         switch (keyPress) {
             case 'UP':
-                rooms[roomID].well.rotateTetrimino(playerID, 'right');
+                rooms[myRoom].well.rotateTetrimino(playerID, 'right');
                 break;
             case 'DOWN':
                 console.log('TODO DOWN');
                 break;
             case 'LEFT':
-                rooms[roomID].well.moveLeft(playerID);
+                rooms[myRoom].well.moveLeft(playerID);
                 break;
             case 'RIGHT':
-                rooms[roomID].well.moveRight(playerID);
+                rooms[myRoom].well.moveRight(playerID);
                 break;
             default:
                 break;
         }
     });
     socket.on('createRoom', (players) => {
-        roomID = ++lastRoomID;
+        const roomID = ++lastRoomID;
         rooms[roomID] = new Room(players, 10, 22);
-        joinRoom(roomID, socket.id);
         for (let i = 0; i < players; i++) {
             rooms[roomID].well.summonTetrimino(randomTetrimino('random', 'random', 0, rooms[roomID].well.width), i);
             //TODO load from config...
-            for (let i = 0; i < 5; i++) {
+            for (let j = 0; j < 5; j++) {
                 rooms[roomID].well.addNext(randomTetrimino('random', 'random', 0, rooms[roomID].well.width), i);
             }
         }
+        joinRoom(roomID, socket.id);
         io.sockets.emit('roomCreated', roomID);
-
-        const fullChecker = setInterval(() => {
-            if (rooms[roomID].isFull()) {
-                setInterval(() => {
-                    const fallen = rooms[roomID].well.step();
-                    for (let i = 0; i < fallen.length; i++) {
-                        rooms[roomID].well.addNext(randomTetrimino('random', 'random', 0, rooms[roomID].well.width), fallen[i]);
-                    }
-                    io.sockets.in(roomID).emit('well', rooms[roomID].well.getWell());
-                }, 100);
-                clearInterval(fullChecker);
-            }
-        }, 100);
     });
     socket.on('joinRoom', (room) => {
         joinRoom(room, socket.id);
@@ -79,22 +66,47 @@ io.on('connection', (socket) => {
         console.log(`Disconnected: ${socket.id}`);
     });
     function joinRoom(room, id) {
-        if (roomID) {
-            socket.leave(roomID);
-            rooms[roomID].removePlayer(id);
+        if (myRoom) {
+            console.log(myRoom);
+            socket.leave(myRoom);
+            rooms[myRoom].removePlayer(id);
         }
         if (!rooms[room]) {
             socket.emit('Error', `room '${room}' does not exist`);
             return;
         }
         socket.join(room);
+        myRoom = room;
         if (!rooms[room].isFull() && rooms[room].players.indexOf(id) === -1) {
-            roomID = room;
             playerID = rooms[room].addPlayer(id);
+            if (rooms[room].isFull()) {
+                activateRoom(room);
+            }
         }
         socket.emit('roomJoined', rooms[room].maxPlayers);
     }
 });
+
+function activateRoom(room) {
+    fullChecker(room);
+    rooms[room].fullChecker = setInterval(fullChecker, 25, room);
+    function fullChecker() {
+        if (rooms[room].isFull() && !rooms[room].interval) {
+            roomHeartbeat();
+            rooms[room].interval = setInterval(roomHeartbeat, 100);
+        } else if (!rooms[room].isFull() && rooms[room].interval) {
+            clearInterval(rooms[room].interval);
+        }
+        function roomHeartbeat() {
+            const fallen = rooms[room].well.step();
+            for (let i = 0; i < fallen.length; i++) {
+                rooms[room].well.addNext(randomTetrimino('random', 'random', 0, rooms[room].well.width), fallen[i]);
+            }
+            io.sockets.in(room).emit('well', rooms[room].well.getWell());
+        }
+    }
+}
+
 function randomTetrimino(color, x, y, wellWidth) {
     const keys = Object.keys(tetriminos),
         randomT = tetriminos[

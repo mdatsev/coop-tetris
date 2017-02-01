@@ -5,6 +5,8 @@ class Room {
         this.maxPlayers = maxPlayers;
         this.well = new Well(maxPlayers * widthPerPlayer, height);
         this.players = [];
+        this.fullChecker = null;
+        this.gameHeartbeat = null;
     }
 
     addPlayer(id) {

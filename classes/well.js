@@ -128,12 +128,35 @@ class Well {
         return well;
     }
 
+    clearLines(lines) {
+        for (var i = 0; i < lines.length; i++) {
+            this.well.matrix.slice(lines[i]);
+        }
+    }
+
+    fullLines() {
+        let lines = [];
+        for (let i = 0; i < this.matrix.height; i++) {
+            let full = true;
+            for (let j = 0; j < this.matrix.width; j++) {
+                if (!this.matrix[i][j]) {
+                    full = false;
+                }
+            }
+            if (full) {
+                lines.push(i);
+            }
+        }
+        return lines;
+    }
+
     step() {
         const fallen = [];
         for (let i = 0; i < this.activeTetriminos.length; i++) {
             const t = this.activeTetriminos[i];
             if (this.collides(t.currentRotation(), t.x, t.y + 1)) {
                 this.addToMatrix(t.currentRotation(), t.x, t.y, t.color);
+                this.clearLines(this.fullLines());
                 this.activeTetriminos[i] = [];
                 if (this.summonTetrimino(this.nextQueues[i][0], i)) {
                     this.nextQueues[i].shift();
@@ -142,6 +165,7 @@ class Well {
             }
             t.y++;
         }
+
         return fallen;
     }
 }
