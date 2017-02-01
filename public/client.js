@@ -5,7 +5,7 @@ let config = {},
     players = 2;
 
 function setup() {
-    addSocketEventListeners();
+    addSocketListeners();
     addSocketEmitters();
 }
 
@@ -48,7 +48,7 @@ function addSocketEmitters() {
     };
 }
 
-function addSocketEventListeners() {
+function addSocketListeners() {
     socket.on('well', drawWell);
     socket.on('Error', (data) => {
         console.log(data);
