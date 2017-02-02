@@ -67,7 +67,6 @@ io.on('connection', (socket) => {
     });
     function joinRoom(room, id) {
         if (myRoom) {
-            console.log(myRoom);
             socket.leave(myRoom);
             rooms[myRoom].removePlayer(id);
         }

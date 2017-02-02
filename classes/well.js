@@ -130,15 +130,19 @@ class Well {
 
     clearLines(lines) {
         for (var i = 0; i < lines.length; i++) {
-            this.well.matrix.slice(lines[i]);
+            console.log(this.matrix);
+            console.log('############################################################');
+            this.matrix.splice(lines[i], 1);
+            this.matrix.unshift((new Array(this.width)).fill(null));
+            console.log(this.matrix);
         }
     }
 
     fullLines() {
         let lines = [];
-        for (let i = 0; i < this.matrix.height; i++) {
+        for (let i = 0; i < this.height; i++) {
             let full = true;
-            for (let j = 0; j < this.matrix.width; j++) {
+            for (let j = 0; j < this.width; j++) {
                 if (!this.matrix[i][j]) {
                     full = false;
                 }
