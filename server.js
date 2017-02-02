@@ -1,5 +1,5 @@
 const config = require('./config');
-const tetriminos = require('./tetriminos');
+const tetriminos = require('./SRS');
 
 const helpers = require('./helpers');
 const Tetrimino = require('./classes/tetrimino');
@@ -106,7 +106,7 @@ function activateRoom(room) {
     }
 }
 
-function randomTetrimino(color, x, y, wellWidth) {
+function randomTetrimino(color, x, y, xConstraint) {
     const keys = Object.keys(tetriminos),
         randomT = tetriminos[
             keys[
@@ -120,7 +120,7 @@ function randomTetrimino(color, x, y, wellWidth) {
     }
     if (x === 'random') {
         x = Math.floor(
-            Math.random() * (wellWidth - randomT[0].length)
+            Math.random() * (xConstraint - randomT[0].length)
         );
     }
     return new Tetrimino(randomT, color, x, y);

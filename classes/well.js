@@ -27,11 +27,15 @@ class Well {
     collides(arr, x, y) {
         for (let i = 0; i < arr.length; i++) {
             for (let j = 0; j < arr[i].length; j++) {
-                if (((i + y) >= this.height) ||
-                    ((i + y) < 0) ||
-                    ((j + x) >= this.width) ||
-                    ((j + x) < 0) ||
-                    (arr[i][j] && this.matrix[i + y][j + x])) {
+                if (
+                    arr[i][j] &&
+                    (
+                        ((i + y) >= this.height) ||
+                        ((i + y) < 0) ||
+                        ((j + x) >= this.width) ||
+                        ((j + x) < 0) ||
+                        this.matrix[i + y][j + x]
+                    )) {
                     return true;
                 }
             }
