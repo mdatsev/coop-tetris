@@ -130,11 +130,8 @@ class Well {
 
     clearLines(lines) {
         for (var i = 0; i < lines.length; i++) {
-            console.log(this.matrix);
-            console.log('############################################################');
             this.matrix.splice(lines[i], 1);
             this.matrix.unshift((new Array(this.width)).fill(null));
-            console.log(this.matrix);
         }
     }
 
