@@ -155,23 +155,30 @@ class Well {
         return lines;
     }
 
-    step() {
+    step(tetrimino) {
         const fallen = [];
+        let lines = [];
         for (let i = 0; i < this.activeTetriminos.length; i++) {
-            const t = this.activeTetriminos[i];
-            if (this.collides(t.currentRotation(), t.x, t.y + 1)) {
-                this.addToMatrix(t.currentRotation(), t.x, t.y, t.color);
-                this.clearLines(this.fullLines());
-                this.activeTetriminos[i] = [];
-                if (this.summonTetrimino(this.nextQueues[i][0], i)) {
-                    this.nextQueues[i].shift();
+            if ((tetrimino !== undefined && tetrimino === i) || tetrimino === undefined) {
+                const t = this.activeTetriminos[i];
+                if (this.collides(t.currentRotation(), t.x, t.y + 1)) {
+                    this.addToMatrix(t.currentRotation(), t.x, t.y, t.color);
+                    lines = this.fullLines();
+                    this.clearLines(lines);
+                    this.activeTetriminos[i] = [];
+                    if (this.summonTetrimino(this.nextQueues[i][0], i)) {
+                        this.nextQueues[i].shift();
+                    }
+                    fallen.push(i);
                 }
-                fallen.push(i);
+                t.y++;
             }
-            t.y++;
         }
 
-        return fallen;
+        return {
+            fallen,
+            lines
+        };
     }
 }
 

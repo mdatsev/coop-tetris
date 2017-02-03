@@ -105,7 +105,7 @@
             ]
         ]
     ],
-    "L": [
+    "J": [
         [
             [
                 true,
@@ -160,13 +160,13 @@
         [
             [
                 false,
-                false,
-                true
+                true,
+                false
             ],
             [
                 false,
-                false,
-                true
+                true,
+                false
             ],
             [
                 true,
@@ -175,7 +175,7 @@
             ]
         ]
     ],
-    "J": [
+    "L": [
         [
             [
                 false,

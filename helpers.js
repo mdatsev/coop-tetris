@@ -11,7 +11,6 @@ function create2DArray(rows, cols) {
 function rgbToHex(r, g, b) {
     function componentToHex(c) {
         const hex = c.toString(16);
-
         return hex.length === 1 ? '0' + hex : hex;
     }
 

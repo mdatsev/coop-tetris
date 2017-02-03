@@ -1,0 +1,8 @@
+{
+    "port": 3000,
+    "wellWidth": 10,
+    "wellHeight": 22,
+    "nextQueueSize": 5,
+    "tetriminoRotations": "./SRS",
+    "tetriminoColors": "./colors"
+}

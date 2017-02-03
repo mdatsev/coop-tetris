@@ -49,7 +49,7 @@
             "never"
         ],
         "capitalized-comments": "off",
-        "one-var": "warn",
+        "one-var": "off",
         "no-var": "warn",
         "spaced-comment": "off",
         "prefer-arrow-callback": "warn",
@@ -78,6 +78,7 @@
         "no-mixed-operators": "off",
         "newline-before-return": "off",
         "max-len": "warn",
-        "max-statements": "warn"
+        "max-statements": "warn",
+        "no-undefined": "warn"
     }
 }
