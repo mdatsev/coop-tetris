@@ -31,24 +31,26 @@ io.on('connection', (socket) => {
         socket.emit('getConfigSuccess', clientConfig);
     });
     socket.on('key press', (keyPress) => {
-        switch (keyPress) {
-            case 'UP':
-                rooms[myRoom].well.rotateTetrimino(playerID, 'right');
-                emitWell(myRoom);
-                break;
-            case 'DOWN':
-                rooms[myRoom].gameHeartbeat(playerID);
-                break;
-            case 'LEFT':
-                rooms[myRoom].well.moveLeft(playerID);
-                emitWell(myRoom);
-                break;
-            case 'RIGHT':
-                rooms[myRoom].well.moveRight(playerID);
-                emitWell(myRoom);
-                break;
-            default:
-                break;
+        if (rooms[myRoom].isFull()) {
+            switch (keyPress) {
+                case 'UP':
+                    rooms[myRoom].well.rotateTetrimino(playerID, 'right');
+                    emitWell(myRoom);
+                    break;
+                case 'DOWN':
+                    rooms[myRoom].gameHeartbeat(playerID);
+                    break;
+                case 'LEFT':
+                    rooms[myRoom].well.moveLeft(playerID);
+                    emitWell(myRoom);
+                    break;
+                case 'RIGHT':
+                    rooms[myRoom].well.moveRight(playerID);
+                    emitWell(myRoom);
+                    break;
+                default:
+                    break;
+            }
         }
     });
     socket.on('createRoom', (players) => {
@@ -69,6 +71,9 @@ io.on('connection', (socket) => {
     });
     socket.on('joinRoom', (room) => {
         joinRoom(room, socket.id);
+    });
+    socket.on('requestWell', () => {
+        socket.emit('well', rooms[myRoom].well.getWell());
     });
     socket.on('disconnect', () => {
         console.log(`Disconnected: ${socket.id}`);

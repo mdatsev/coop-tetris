@@ -5,17 +5,9 @@ let config = {},
     players = 2;
 
 function setup() {
+    socket.emit('getConfig');
     addSocketListeners();
     addSocketEmitters();
-}
-
-function loadGame() {
-    socket.on('getConfigSuccess', (data) => {
-        loadConfig(data);
-        loadUserSettings();
-        drawCanvasElements();
-    });
-    socket.emit('getConfig');
 }
 
 function loadUserSettings() {
@@ -49,13 +41,20 @@ function addSocketEmitters() {
 }
 
 function addSocketListeners() {
+    socket.on('getConfigSuccess', (data) => {
+        config = data;
+        loadUserSettings();
+        updateCanvasSize();
+    });
     socket.on('well', drawWell);
     socket.on('Error', (data) => {
         console.log(data);
     });
     socket.on('roomJoined', (maxPlayers) => {
         players = maxPlayers;
-        loadGame();
+        updateCanvasSize();
+        drawCanvasElements();
+        socket.emit('requestWell');
     });
     socket.on('roomCreated', (id) => {
         console.log(id);
@@ -75,15 +74,13 @@ function drawWell(well) {
     }
 }
 
-function loadConfig(data) {
-    config = data;
-
+function updateCanvasSize() {
     config.width = 2 * config.sidebarSize + config.wellWidth * players;
     config.height = config.sidebarSize + config.wellHeight + config.ground;
+    createCanvas(config.width, config.height);
 }
 
 function drawCanvasElements() {
-    createCanvas(config.width, config.height);
     drawTopPanel();
     drawLeftPanel();
     drawRightPanel();
